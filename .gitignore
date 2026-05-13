@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+data/*.pdf
+data/*.txt
+.DS_Store
+env.yaml
+cloud_function/env.yaml

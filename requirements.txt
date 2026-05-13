@@ -1,0 +1,10 @@
+google-genai
+google-cloud-storage
+pymongo
+python-dotenv
+pypdf
+langchain
+langchain-core
+langchain-text-splitters
+streamlit
+functions-framework

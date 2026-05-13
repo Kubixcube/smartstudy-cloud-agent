@@ -1,0 +1,6 @@
+functions-framework==3.*
+google-cloud-storage
+google-genai
+pymongo
+pypdf
+langchain-text-splitters
