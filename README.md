@@ -433,3 +433,13 @@ If a password is accidentally exposed:
 2. Update `.env`.
 3. Update `cloud_function/env.yaml`.
 4. Redeploy the Cloud Function.
+
+---
+
+## Quiz Mode
+
+Generate a quiz from the indexed course material:
+
+```powershell
+python -m scripts.ask_local "/quiz demo-course"
+```
