@@ -68,3 +68,26 @@ def similarity_search(query_embedding: list[float], k: int = 5) -> list[dict]:
     ]
 
     return list(collection.aggregate(pipeline))
+
+
+def get_representative_chunks(limit: int = 12):
+    collection = get_collection()
+
+    docs = list(
+        collection.find(
+            {},
+            {
+                "_id": 0,
+                "text": 1,
+                "source_file": 1,
+                "page": 1,
+                "chunk_index": 1,
+            },
+        ).sort([("page", 1), ("chunk_index", 1)])
+    )
+
+    if len(docs) <= limit:
+        return docs
+
+    step = max(1, len(docs) // limit)
+    return docs[::step][:limit]
