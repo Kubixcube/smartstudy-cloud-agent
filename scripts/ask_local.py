@@ -22,7 +22,7 @@ def main():
     question = " ".join(sys.argv[1:])
 
     if question.strip().lower().startswith("/quiz"):
-        topic = question.replace("/quiz", "", 1).strip()
+        topic = question.strip()[len("/quiz"):].strip()
         if not topic:
             topic = "Generate a quiz from the indexed course material."
 
