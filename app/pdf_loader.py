@@ -12,7 +12,7 @@ def extract_pdf_pages(pdf_path: str | Path) -> list[dict]:
         raise ValueError(f"Expected a PDF file, got: {pdf_path}")
 
     try:
-        reader = PdfReader(str(path))
+        reader = PdfReader(str(pdf_path))
     except Exception as exc:
         raise RuntimeError(f"Failed to open or parse PDF: {pdf_path}") from exc
     pages = []
@@ -21,7 +21,7 @@ def extract_pdf_pages(pdf_path: str | Path) -> list[dict]:
         try:
             text = page.extract_text() or ""
         except Exception as exc:
-            print(f"Warning: failed to extract text from page {page_index}: {exc}")
+            print(f"Warning: failed to extract text from page {index + 1}: {exc}")
             text = ""
         text = text.strip()
 
