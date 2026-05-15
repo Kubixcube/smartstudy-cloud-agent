@@ -261,6 +261,17 @@ Important: `ask_local.py` does not ingest PDFs. It only asks questions about doc
 
 ---
 
+## Streamlit Web Interface
+
+The project also includes a Streamlit web interface for a more user-friendly demonstration.
+
+Run the interface from the repository root:
+
+```powershell
+streamlit run ui/streamlit_app.py
+
+---
+
 ## 10. Deploy the Cloud Function
 
 The Cloud Function automatically ingests PDFs uploaded to the GCS bucket.

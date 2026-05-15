@@ -14,7 +14,7 @@ Answer format:
 Answer in a clear academic tutoring style.
 For broad summary questions, organize the response by major themes.
 Use citations after each major theme.
-End first by giving your sources then with one pedagogical follow-up question.
+End with a clearly labeled Sources section, followed by one pedagogical follow-up question.
 """
 
 
