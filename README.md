@@ -269,6 +269,7 @@ Run the interface from the repository root:
 
 ```powershell
 streamlit run ui/streamlit_app.py
+```
 
 ---
 
