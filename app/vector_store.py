@@ -68,3 +68,45 @@ def similarity_search(query_embedding: list[float], k: int = 5) -> list[dict]:
     ]
 
     return list(collection.aggregate(pipeline))
+
+
+def get_representative_chunks(limit: int = 12, source_file: str | None = None) -> list[dict]:
+    """
+    Return chunks spread across a document instead of top-k semantic matches.
+
+    If source_file is provided, only chunks from that file are used.
+    This avoids mixing multiple PDFs when generating a broad summary.
+    """
+    collection = get_collection()
+
+    query = {}
+    if source_file:
+        query["source_file"] = source_file
+
+    docs = list(
+        collection.find(
+            query,
+            {
+                "_id": 0,
+                "text": 1,
+                "source_file": 1,
+                "page": 1,
+                "chunk_index": 1,
+                "chunk_id": 1,
+            },
+        ).sort([("source_file", 1), ("page", 1), ("chunk_index", 1)])
+    )
+
+    if len(docs) <= limit:
+        return docs
+
+    if limit <= 1:
+        return [docs[0]]
+
+    # Select chunks distributed from the beginning to the end of the document.
+    indexes = [
+        round(i * (len(docs) - 1) / (limit - 1))
+        for i in range(limit)
+    ]
+
+    return [docs[i] for i in indexes]

@@ -11,11 +11,18 @@ def extract_pdf_pages(pdf_path: str | Path) -> list[dict]:
     if pdf_path.suffix.lower() != ".pdf":
         raise ValueError(f"Expected a PDF file, got: {pdf_path}")
 
-    reader = PdfReader(str(pdf_path))
+    try:
+        reader = PdfReader(str(pdf_path))
+    except Exception as exc:
+        raise RuntimeError(f"Failed to open or parse PDF: {pdf_path}") from exc
     pages = []
 
     for index, page in enumerate(reader.pages):
-        text = page.extract_text() or ""
+        try:
+            text = page.extract_text() or ""
+        except Exception as exc:
+            print(f"Warning: failed to extract text from page {index + 1}: {exc}")
+            text = ""
         text = text.strip()
 
         if text:

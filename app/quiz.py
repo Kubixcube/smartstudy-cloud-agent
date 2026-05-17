@@ -31,6 +31,7 @@ def generate_quiz(topic: str, k: int = 5) -> dict:
         - Questions must test understanding of the material.
         - Include a mix of easy and medium questions.
         - Include the correct answer after each question.
+        - Cite the source file and page used for each answer.
         - Format clearly in Markdown.
         - Do NOT invent information outside the context.
 
