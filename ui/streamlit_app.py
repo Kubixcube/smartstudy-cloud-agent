@@ -14,6 +14,7 @@ from app.config import get_settings
 from app.rag_chain import answer_question
 from app.quiz import generate_quiz
 from app.vector_store import get_collection
+from app.memory import get_recent_history, clear_history
 
 st.set_page_config(
     page_title="SmartStudy Cloud Agent",
@@ -141,8 +142,8 @@ with st.sidebar:
     except Exception as exc:
         st.error(f"Could not read indexed files: {exc}")
 
-tab_upload, tab_ask, tab_quiz = st.tabs(
-    ["Upload PDF", "Ask Questions", "Quiz Mode"]
+tab_upload, tab_ask, tab_quiz, tab_history = st.tabs(
+    ["Upload PDF", "Ask Questions", "Quiz Mode", "Conversation History"]
 )
 
 
@@ -278,3 +279,50 @@ with tab_quiz:
         except Exception as exc:
             st.error("Quiz generation failed.")
             st.exception(exc)
+  
+            
+with tab_history:
+    st.subheader("Conversation History")
+
+    st.write(
+        "This tab shows the recent conversation stored in MongoDB. "
+        "It is used by SmartStudy to maintain conversational continuity."
+    )
+
+    history_limit = st.slider(
+        "Number of recent messages",
+        min_value=2,
+        max_value=20,
+        value=10,
+        step=2,
+    )
+
+    if st.button("Refresh history"):
+        st.rerun()
+
+    if st.button("Clear conversation history", type="secondary"):
+        deleted = clear_history()
+        st.success(f"Cleared {deleted} messages from memory.")
+        st.rerun()
+
+    try:
+        history = get_recent_history(limit=history_limit)
+
+        if not history:
+            st.info("No conversation history found yet.")
+        else:
+            for message in history:
+                role = message["role"].upper()
+                content = message["content"]
+
+                if role == "USER":
+                    st.markdown("### User")
+                else:
+                    st.markdown("### SmartStudy")
+
+                st.markdown(content)
+                st.divider()
+
+    except Exception as exc:
+        st.error("Could not load conversation history.")
+        st.exception(exc)

@@ -5,6 +5,12 @@ from app.embeddings import embed_query
 from app.vector_store import similarity_search, get_representative_chunks
 from app.tutor_prompt import build_tutor_prompt
 
+from app.memory import (
+    save_message,
+    get_recent_history,
+    format_history_for_prompt,
+)
+
 
 GENERATION_MODEL = "gemini-2.5-flash"
 
@@ -75,12 +81,43 @@ def retrieve_context(question: str, k: int = 5) -> list[dict]:
     return similarity_search(query_embedding, k=k)
 
 
-def answer_question(question: str, k: int = 5) -> dict:
+def build_memory_prompt(history_text: str) -> str:
+    return f"""
+            Previous conversation history:
+            {history_text}
+
+            For factual questions about lessons or documents, use the retrieved lesson context
+            as the primary source of truth.
+
+            If the answer exists in the conversation history but not in the lesson documents,
+            you are allowed to answer using the conversation history but you must clearly indicate
+            that the information is from the conversation history and not the lesson context.
+            """
+
+
+def answer_question(question: str, k: int = 5, session_id: str = "default") -> dict:
+    history = get_recent_history(session_id)
+    history_text = format_history_for_prompt(history)
+
     context_chunks = retrieve_context(question, k=k)
-    prompt = build_tutor_prompt(question, context_chunks)
-    answer = generate_with_gemini(prompt)
+
+    base_prompt = build_tutor_prompt(question, context_chunks)
+
+    memory_prompt = build_memory_prompt(history_text)
+
+    final_prompt = f"""
+                    {memory_prompt}
+
+                    {base_prompt}
+                    """
+
+    answer = generate_with_gemini(final_prompt)
+
+    save_message(session_id, "user", question)
+    save_message(session_id, "assistant", answer)
 
     return {
         "answer": answer,
         "sources": context_chunks,
+        "history_used": history,
     }

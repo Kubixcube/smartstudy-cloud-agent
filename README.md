@@ -455,3 +455,19 @@ Generate a quiz from the indexed course material:
 ```powershell
 python -m scripts.ask_local "/quiz demo-course"
 ```
+---
+
+## Conversation Memory
+
+SmartStudy stores recent interactions in MongoDB to maintain conversational continuity.
+You can view and clear history.
+
+Example:
+
+```powershell
+python -m scripts.ask_local "Bonjour, je m'appelle Gengis Khan."
+python -m scripts.ask_local "Comment je m'appelle ?"
+python -m scripts.ask_local "/history"
+python -m scripts.ask_local "/clear"
+```
+

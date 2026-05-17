@@ -2,6 +2,7 @@ import sys
 
 from app.rag_chain import answer_question
 from app.quiz import generate_quiz
+from app.memory import get_recent_history, clear_history
 
 
 def print_sources(sources: list[dict]) -> None:
@@ -33,6 +34,27 @@ def main():
         print_sources(result["sources"])
         return
 
+    if question.strip().lower() == "/history":
+        history = get_recent_history()
+
+        print("\n=== Conversation History ===\n")
+
+        if not history:
+            print("No history found.")
+            return
+
+        for message in history:
+            print(f"{message['role'].upper()}: {message['content']}\n")
+
+        return
+
+
+    if question.strip().lower() == "/clear":
+        deleted = clear_history()
+
+        print(f"\nCleared {deleted} messages from memory.\n")
+        return
+    
     result = answer_question(question)
 
     print("\n=== SmartStudy Answer ===\n")
